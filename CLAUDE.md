@@ -29,9 +29,44 @@ npx serve .
 - タスクデータは `localStorage` で永続化する
 - コンポーネント構成: `App` → `TaskInput` / `TaskList` → `TaskItem`
 
+## 技術スタック
+
+| 項目 | 内容 |
+|------|------|
+| マークアップ | HTML5 |
+| スタイル | CSS3（外部フレームワークなし） |
+| UIライブラリ | React 18 |
+| JSX変換 | Babel Standalone（ブラウザ内でリアルタイム変換） |
+| 状態管理 | React `useState` / `useEffect`（ライブラリなし） |
+| データ永続化 | `localStorage` |
+| ビルドツール | なし |
+| パッケージ管理 | なし（CDN経由で読み込み） |
+
+## コンポーネント命名規約
+
+### コンポーネント名
+- **パスカルケース**（先頭大文字）を使用する
+- 例: `App`, `TaskInput`, `TaskList`, `TaskItem`
+
+### props 名
+- **キャメルケース**を使用する
+- 例: `onAdd`, `onToggle`, `onDelete`
+
+### イベントハンドラ名
+- `handle` を接頭辞とするキャメルケースを使用する
+- 例: `handleAdd`, `handleKeyDown`
+
+### CSS クラス名
+- **ケバブケース**（ハイフン区切り）を使用する
+- 例: `task-input`, `task-item`, `delete-btn`
+
 ## GitHubリポジトリ
 
 https://github.com/ShinCom1974/task-board
+
+## デプロイ先
+
+https://shincom1974.github.io/task-board/
 
 ## Git 運用ルール
 
