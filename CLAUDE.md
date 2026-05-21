@@ -60,6 +60,78 @@ npx serve .
   - `onDelete(id)`: 削除ボタン押下時に呼ぶ関数
 - **state**: なし
 
+## コーディング規約
+
+### 関数・変数の命名規則
+
+| 種類 | 規則 | 例 |
+|------|------|----|
+| コンポーネント名 | パスカルケース | `App`, `TaskInput`, `TaskList`, `TaskItem` |
+| 関数・変数 | キャメルケース | `addTask`, `toggleTask`, `remaining` |
+| イベントハンドラ | `handle` + 動詞のキャメルケース | `handleAdd`, `handleKeyDown` |
+| コールバック props | `on` + 動詞のキャメルケース | `onAdd`, `onToggle`, `onDelete` |
+| 真偽値のプロパティ | 形容詞または過去分詞 | `done`（`isCompleted` より短く自然な形） |
+| CSS クラス名 | ケバブケース | `task-item`, `delete-btn`, `task-input` |
+
+### コメントの書き方方針
+
+- **基本はコメントを書かない**。変数名・関数名で意図が伝わるように命名する
+- CSS では視覚的なブロック区切りに `/* --- セクション名 --- */` 形式を使う
+- 書く場合は「何をしているか」ではなく「なぜそうしているか」を1行で書く
+
+```js
+// OK: 理由を書く
+// 空文字を弾いてから追加（スペースのみのタスクを防ぐ）
+const trimmed = text.trim();
+
+// NG: コードを日本語にしただけ
+// テキストをトリムする
+const trimmed = text.trim();
+```
+
+### React のベストプラクティス
+
+**state はイミュータブルに更新する**
+```js
+// OK: 新しい配列を返す
+setTasks(prev => [...prev, newTask]);
+setTasks(prev => prev.filter(t => t.id !== id));
+setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
+
+// NG: 直接変更する
+tasks.push(newTask);
+tasks[0].done = true;
+```
+
+**リストには必ず `key` を付ける。インデックスは使わない**
+```jsx
+// OK: ユニークな id を使う
+tasks.map(task => <TaskItem key={task.id} ... />)
+
+// NG: インデックスを使う（並び替え・削除で不具合が起きる）
+tasks.map((task, index) => <TaskItem key={index} ... />)
+```
+
+**副作用は `useEffect` で管理する**
+```js
+// OK: localStorage への書き込みは useEffect 内で行う
+useEffect(() => {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}, [tasks]);
+```
+
+**state は必要な最上位コンポーネントだけに持つ**
+- `tasks` は `App` だけが管理し、子コンポーネントは props で受け取るだけにする
+- 子コンポーネントが自分で state を持つのは、そのコンポーネント内で完結する値のみ（例: `TaskInput` の `text`）
+
+### やってはいけないこと
+
+- **DOM を直接操作しない** — `document.getElementById` や `innerHTML` は使わず、React の state と JSX で画面を制御する
+- **state を直接変更しない** — `tasks.push()` や `task.done = true` のような破壊的操作は行わない
+- **`key` にインデックスを使わない** — 削除・並び替え時に React の差分検知が壊れる
+- **コンポーネント外で state を管理しない** — グローバル変数にタスクを持たせない
+- **1つのコンポーネントに複数の責務を持たせない** — 表示・入力・リスト管理はそれぞれ別コンポーネントに分ける
+
 ## 技術スタック
 
 | 項目 | 内容 |
